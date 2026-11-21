@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Fitness-Check | Grenzenlos Stark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Fraunces:ital,wght@1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0A0A0A; --red:#9E2A2F; --olive:#3D4033; --sand:#A9825C;
+    --steel:#494949; --bone:#F2EFE9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--black);color:var(--bone);font-family:Inter,system-ui,sans-serif}
+  body{display:flex;justify-content:center;padding:28px 18px 48px}
+  .wrap{width:100%;max-width:560px}
+  .brand{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
+  .logo{font-family:"Bebas Neue";font-size:22px;letter-spacing:.06em;white-space:nowrap}
+  .logo span{color:var(--red)}
+  .step-count{font-family:"JetBrains Mono";font-size:12px;color:#9a978f;letter-spacing:.08em;white-space:nowrap}
+  .bar{height:3px;background:#1e1e1e;margin-bottom:34px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--red);transition:width .35s ease}
+  .eyebrow{font-family:"JetBrains Mono";font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:12px}
+  h1,h2,h3{font-family:"Bebas Neue";font-weight:400;letter-spacing:.02em;line-height:.95;text-transform:uppercase}
+  h1{font-size:clamp(44px,11vw,64px);margin-bottom:18px}
+  h2{font-size:clamp(34px,8.5vw,46px);margin-bottom:22px}
+  h3{font-size:28px;margin-bottom:14px}
+  p{font-size:16px;line-height:1.6;color:#d9d5cd}
+  p+p{margin-top:12px}
+  .lead{margin:-6px 0 22px}
+  .accent{font-family:Fraunces;font-style:italic;color:var(--sand)}
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{all:unset;box-sizing:border-box;cursor:pointer;display:block;border:1px solid #2c2c2c;background:#121212;padding:16px 18px;font-size:16px;line-height:1.4;transition:border-color .15s,background .15s}
+  .opt:hover{border-color:var(--steel);background:#171717}
+  .opt.sel{border-color:var(--red);background:#1a1011}
+  .opt small{display:block;margin-top:6px;font-family:"JetBrains Mono";font-size:12px;color:var(--sand);letter-spacing:.04em}
+  .opt:focus-visible,.btn:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
+  .btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-block;text-align:center;font-family:"Bebas Neue";font-size:24px;letter-spacing:.06em;padding:15px 26px;background:var(--red);color:var(--bone);transition:filter .15s}
+  .btn:hover{filter:brightness(1.12)}
+  .btn.full{display:block;width:100%}
+  .btn.ghost{background:transparent;border:1px solid var(--steel)}
+  .btn[disabled]{opacity:.35;pointer-events:none}
+  .btns{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+  .back{all:unset;cursor:pointer;font-family:"JetBrains Mono";font-size:12px;color:#8a877f;letter-spacing:.08em;margin-top:22px;display:inline-block}
+  .back:hover{color:var(--bone)}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-family:"JetBrains Mono";font-size:12px;letter-spacing:.08em;color:#9a978f;margin-bottom:6px;text-transform:uppercase}
+  .field input{width:100%;background:#121212;border:1px solid #2c2c2c;color:var(--bone);font:16px Inter;padding:14px 16px;outline:none;border-radius:0}
+  .field input:focus{border-color:var(--sand)}
+  .check{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:#b5b1a9;margin:6px 0 22px}
+  .check input{margin-top:3px;accent-color:var(--red)}
+  .check a{color:var(--sand)}
+  .gains,.rows{border-top:1px solid #2a2a2a;margin:18px 0 6px}
+  .gains div{display:flex;gap:16px;align-items:baseline;padding:13px 0;border-bottom:1px solid #2a2a2a;font-size:16px;color:var(--bone)}
+  .gains div span{font-family:"JetBrains Mono";font-size:12px;color:var(--red);letter-spacing:.08em}
+  .gains div b{font-weight:500}
+  .rows div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid #2a2a2a}
+  .rows span{font-family:"JetBrains Mono";font-size:12px;letter-spacing:.06em;color:#9a978f;text-transform:uppercase;padding-top:3px;white-space:nowrap}
+  .rows b{font-weight:500;text-align:right;color:var(--bone)}
+  .section{margin-top:34px}
+  .stat{border:1px solid #2a2a2a;background:#111;padding:22px 20px;margin:22px 0}
+  .stat .num{font-family:"JetBrains Mono";font-weight:500;font-size:clamp(46px,13vw,64px);line-height:1;color:var(--bone)}
+  .stat .num small{font-size:.38em;letter-spacing:.1em;color:var(--sand);margin-left:8px}
+  .stat .calc{font-family:"JetBrains Mono";font-size:12px;color:#8a877f;letter-spacing:.04em;margin:10px 0 12px}
+  .quote{border-left:3px solid var(--red);padding:4px 0 4px 18px;margin:22px 0}
+  .quote .who{font-family:"JetBrains Mono";font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--sand);margin-bottom:8px}
+  .card{border-left:3px solid var(--olive);background:#111;padding:18px 20px;margin:22px 0}
+  ol.qs{margin:16px 0 0 0;padding:0;list-style:none;counter-reset:q}
+  ol.qs li{counter-increment:q;display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #2a2a2a;font-size:16px;line-height:1.5;color:var(--bone)}
+  ol.qs li::before{content:"0" counter(q);font-family:"JetBrains Mono";font-size:12px;color:var(--red);padding-top:4px}
+  .note{font-size:13px;color:#8a877f;margin-top:14px;line-height:1.5}
+  .screen{animation:in .3s ease}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .actions{margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="logo">GRENZENLOS <span>STARK</span></div>
+    <div class="step-count" id="count"></div>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+  <main id="app"></main>
+</div>
+
+<script>
+/* ================= KONFIGURATION ================= */
+const CONFIG = {
+  webhookUrl: "https://services.leadconnectorhq.com/hooks/aLDwdjrOqP3ozY5P79dW/webhook-trigger/8fd7e2c9-edb2-45e4-a8ee-fbe925777a04",
+  whatsappUrl: "https://wa.me/message/XWDRAFO2SATXP1",
+  podcastUrl: "https://open.spotify.com/show/2uKfyNFFKEONVHLPmvXcXh",
+  privacyUrl: "https://www.grenzenlos-stark.com/grenzenlos-stark--datenschutzerklrung",
+  minutesPerSession: 45,
+  weeksPerYear: 48
+};
+
+/* ================= FRAGEN ================= */
+const Q = [
+  { id:"activity", eyebrow:"Dein Terrain", title:"Wofür trainierst du?",
+    opts:[
+      {v:"Wandern & Steige"}, {v:"Bergtouren"}, {v:"Jagd"},
+      {v:"Camping & Bushcraft"}, {v:"Etwas anderes"}
+    ]},
+  { id:"status", eyebrow:"Dein Trainingsstand", title:"Trainierst du aktuell?",
+    opts:[
+      {v:"none", l:"Aktuell gar nicht"},
+      {v:"irregular", l:"Unregelmäßig, wenn es gerade passt"},
+      {v:"regular", l:"Regelmäßig, mindestens 1× pro Woche"}
+    ]},
+  { id:"problem", eyebrow:"Deine Situation", title:"Was trifft gerade am ehesten auf dich zu?",
+    opts:[
+      {v:"progress", l:"Ich mache keine Fortschritte im Training"},
+      {v:"pain", l:"Knie oder Rücken machen auf Touren Probleme"},
+      {v:"goal", l:"Ich habe ein konkretes Ziel, das ich erreichen will"},
+      {v:"routine", l:"Mir fehlt ein Plan, der zu meinem Alltag passt"},
+      {v:"injury", l:"Ich komme gerade aus einer Verletzung zurück"}
+    ]},
+  { id:"time", eyebrow:"Dein Zeitbudget", title:"Wie oft kannst du pro Woche trainieren?",
+    opts:[
+      {v:"2", l:"2 Einheiten"}, {v:"3", l:"3 Einheiten"}, {v:"4", l:"4 Einheiten oder mehr"}
+    ]},
+  { id:"format", eyebrow:"Dein Format", title:"Wie möchtest du am liebsten trainieren?",
+    showIf: a => a.status !== "none",
+    opts:[
+      {v:"system", l:"Selbstständig nach einem fertigen System", s:"Plan + Erklärvideos · du ziehst durch"},
+      {v:"individuell", l:"Mit einem Plan, den Chris individuell für mich baut", s:"inkl. WhatsApp-Support · ab 250 € / Monat"}
+    ]},
+  { id:"budget", eyebrow:"Klartext", title:"Passt das Investment für dich?",
+    intro:"Bevor wir in die Details gehen und entscheiden, ob und wie wir zusammenarbeiten können: Das 1:1 kostet je nach Laufzeit 250 bis 350 € im Monat, plus einmalig 350 € Onboarding. Ist das für dich gerade realistisch?",
+    showIf: a => a.status !== "none" && a.format === "individuell",
+    opts:[ {v:"ja", l:"Ja, das passt"}, {v:"nein", l:"Gerade nicht"} ]}
+];
+
+/* ================= AUSWERTUNGSTEXTE ================= */
+const STATUS_TEXT = {
+  none: "Du trainierst aktuell gar nicht. Du startest also bei null, und genau da entscheidet der richtige Einstieg, ob du dranbleibst.",
+  irregular: "Du trainierst, aber unregelmäßig. Damit fehlt dir die Kontinuität, die aus Training überhaupt erst Fortschritt macht.",
+  regular: "Du trainierst regelmäßig. Die Basis ist da. Die Frage ist, ob dein Training auf das einzahlt, was du draußen vorhast."
+};
+const PROBLEM_TEXT = {
+  progress: "Das sehe ich ganz oft: mal ein Hyrox-Kurs, mal CrossFit, mal Yoga, aber kein roter Faden. Ohne einen Plan, der sich Woche für Woche steigert, tritt dein Körper irgendwann auf der Stelle.",
+  pain: "Meistens fehlt eins von beiden im Training. Entweder werden die Beine nicht trainiert, weil man denkt, die werden beim Wandern schon stark, dann kommen Knie und Hüfte. Oder Oberkörper und Rumpf fehlen, dann meldet sich unter dem Rucksack irgendwann der Rücken.",
+  goal: "Dann hast du schon das Wichtigste: einen Punkt B. Ob Steig, Event oder Jagdsaison, dein Training muss genau darauf ausgerichtet sein und nicht auf irgendwas.",
+  routine: "Das Problem ist selten die Zeit. Das Problem ist ein Plan, der nur in einer perfekten Woche funktioniert. Ich arbeite deshalb mit dem Minimum-Optimum-Maximum-Prinzip: Läuft die Woche normal, trainierst du im Optimum. Bricht die Hölle los, machst du dein Minimum. Das Training fällt nicht aus, es wird nur kürzer.",
+  injury: "Grundregel: Alles, was nicht wehtut, darfst du machen. Was wehtut, lässt du weg. Nach einer Verletzung empfehle ich dir aber einen individuellen Plan, damit du alles nach und nach sauber aufbaust und es nicht beim ersten Mal Vollgas wieder aufflammt."
+};
+const RECO = {
+  "1:1": "Du willst es individuell, und genau das braucht dein Engpass: ein Plan, der auf dein Ziel, dein Equipment und deinen Alltag gebaut ist und alle 4 Wochen angepasst wird.",
+  "einsteiger": "Für die Arbeit im 1:1 brauchst du schon eine Basis, und genau die baust du jetzt auf. Der Hike Ready Plan gibt dir 4 Wochen, 3 Einheiten pro Woche, jede mit Warm Up und Cool Down. Danach weißt du, wo du stehst, und kannst entscheiden, wie es weitergeht.",
+  "system": "Starte mit einem klaren System statt mit einzelnen Einheiten. Der Hike Ready Plan gibt dir 4 Wochen, 3 Einheiten pro Woche, jede mit Warm Up und Cool Down.",
+  "budget-nein": "Das 1:1 passt gerade nicht, völlig okay. Starte mit einem klaren System statt mit einzelnen Einheiten. Der Hike Ready Plan gibt dir 4 Wochen, 3 Einheiten pro Woche, jede mit Warm Up und Cool Down."
+};
+const INJURY_ADDON = "Bei aktuellen Beschwerden lass alles weg, was wehtut. Und wenn du merkst, dass es nicht besser wird, ist das 1:1 der richtige Weg.";
+const VOICE_QUESTIONS = [
+  "Wer bist du und wofür trainierst du?",
+  "Was ist dein konkretes Ziel, und bis wann willst du es erreichen?",
+  "Was hast du bisher versucht, und warum hat es nicht gereicht?"
+];
+
+/* ================= STATE ================= */
+let A = {};            // Antworten
+let contact = {};      // Vorname, E-Mail
+let history = [];
+let current = "intro";
+let completeSent = false;
+const app = document.getElementById("app");
+
+const visibleQ = () => Q.filter(q => !q.showIf || q.showIf(A));
+const labelOf = id => { const q = Q.find(x => x.id === id); const o = q && q.opts.find(x => x.v === A[id]); return o ? (o.l || o.v) : ""; };
+const hours = () => Number(A.time || 0) * CONFIG.minutesPerSession * CONFIG.weeksPerYear / 60;
+
+function route(){
+  if (A.status === "none") return "einsteiger";
+  if (A.format === "individuell" && A.budget === "ja") return "1:1";
+  if (A.format === "individuell") return "budget-nein";
+  return "system";
+}
+function slug(s){ return String(s).toLowerCase().replace(/&/g,"und").replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
+function tags(extra){
+  const r = route();
+  const t = ["fitness-check-abgeschlossen", "stand-" + A.status, "engpass-" + A.problem, "aktivitaet-" + slug(A.activity || "")];
+  if (r === "1:1") t.push("1:1-qualifiziert");
+  if (r === "einsteiger") t.push("einsteiger");
+  if (r === "budget-nein") t.push("1:1-budget-nein");
+  if (r === "system") t.push("fertiges-system");
+  if (extra) t.push(extra);
+  return t;
+}
+
+/* ================= ÜBERGABE AN ALLURA ================= */
+function send(fields){
+  if (!CONFIG.webhookUrl) return;
+  try {
+    const body = new URLSearchParams(Object.assign({
+      first_name: contact.firstName || "", email: contact.email || "",
+      source: "fitness-check", consent: "ja", timestamp: new Date().toISOString()
+    }, fields));
+    fetch(CONFIG.webhookUrl, { method:"POST", mode:"no-cors", body, keepalive:true }).catch(()=>{});
+  } catch(e){}
+}
+function sendStart(){ send({ event:"start", tags:"fitness-check-gestartet" }); }
+function sendComplete(hikeReady){
+  if (completeSent) return; completeSent = true;
+  send({
+    event:"complete",
+    activity: A.activity || "", status: labelOf("status"), problem: labelOf("problem"),
+    time_per_week: labelOf("time"), hours_per_year: String(hours()),
+    format: A.format || "", budget: A.budget || "", route: route(),
+    hike_ready: hikeReady || "",
+    tags: tags(hikeReady ? "hike-ready-" + hikeReady : null).join(",")
+  });
+}
+
+/* ================= IFRAME-HÖHE ================= */
+function postHeight(){
+  try { parent.postMessage({ type:"fc-height", height: document.documentElement.scrollHeight }, "*"); } catch(e){}
+}
+new ResizeObserver(postHeight).observe(document.body);
+function toTop(){
+  window.scrollTo({top:0,behavior:"smooth"});
+  try { parent.postMessage({ type:"fc-scrolltop" }, "*"); } catch(e){}
+}
+
+/* ================= NAVIGATION ================= */
+function progress(){
+  const steps = ["contact", ...visibleQ().map(q => "q:" + q.id)];
+  const total = steps.length;
+  const pos = steps.indexOf(current) + 1;
+  const done = current === "intro" ? 0 : pos > 0 ? pos / (total + 1) : 1;
+  document.getElementById("bar").style.width = (done * 100) + "%";
+  document.getElementById("count").textContent =
+    current === "intro" ? "60 SEKUNDEN" :
+    pos > 0 ? String(pos).padStart(2,"0") + " / " + String(total).padStart(2,"0") : "AUSWERTUNG";
+}
+function go(screen, push=true){ if (push) history.push(current); current = screen; render(); toTop(); }
+function back(){ if (history.length){ current = history.pop(); render(); toTop(); } }
+function nextAfter(id){
+  const vq = visibleQ(); const i = vq.findIndex(q => q.id === id);
+  return i < vq.length - 1 ? "q:" + vq[i+1].id : "result";
+}
+function render(){
+  progress();
+  if (current === "intro") return renderIntro();
+  if (current === "contact") return renderContact();
+  if (current.startsWith("q:")) return renderQ(Q.find(q => q.id === current.slice(2)));
+  if (current === "result") return renderResult();
+  if (current === "done-ja") return renderDone(true);
+  if (current === "done-nein") return renderDone(false);
+}
+
+/* ================= SCREENS ================= */
+function renderIntro(){
+  app.innerHTML = `
+  <section class="screen">
+    <div class="eyebrow">Fitness-Check · Wandern &amp; Outdoor</div>
+    <h1>Weißt du, wo du gerade stehst?</h1>
+    <p>Du trainierst regelmäßig, zwei, drei Mal die Woche. Und trotzdem merkst du es auf deinen Touren immer wieder: Die Performance bricht ein, beim Abstieg meldet sich das Knie, und nach dem Wochenende bist du den Rest der Woche im Arsch. Da liegt es nahe, dass dein Training nicht zu dem passt, was du draußen vorhast.</p>
+    <p>60 Sekunden. Danach weißt du:</p>
+    <div class="gains">
+      <div><span>01</span><b>was dich gerade wirklich bremst</b></div>
+      <div><span>02</span><b>wie viel Training du realistisch brauchst</b></div>
+      <div><span>03</span><b>wie du dein Ziel erreichst und wie das mit uns konkret aussehen kann</b></div>
+    </div>
+    <p class="accent" style="margin-top:18px">Train harder than you hike.</p>
+    <div class="actions"><button class="btn full" id="start">JETZT FITNESS-CHECK STARTEN</button></div>
+  </section>`;
+  document.getElementById("start").onclick = () => go("contact");
+}
+
+function renderContact(){
+  app.innerHTML = `
+  <section class="screen">
+    <div class="eyebrow">Bevor es losgeht</div>
+    <h2>Wer bist du?</h2>
+    <p class="lead">Trag kurz deinen Vornamen und deine E-Mail ein, damit wir in Kontakt bleiben können. Deine Auswertung siehst du direkt am Ende.</p>
+    <form id="f" novalidate>
+      <div class="field"><label for="fn">Vorname</label><input id="fn" autocomplete="given-name"></div>
+      <div class="field"><label for="em">E-Mail</label><input id="em" type="email" autocomplete="email"></div>
+      <label class="check"><input type="checkbox" id="ds"> <span>Ich möchte meine Auswertung und den wöchentlichen Newsletter von Grenzenlos Stark erhalten. Abmeldung jederzeit möglich. Mehr in der <a href="${CONFIG.privacyUrl}" target="_blank" rel="noopener">Datenschutzerklärung</a>.</span></label>
+      <button class="btn full" id="sub" type="submit" disabled>WEITER</button>
+    </form>
+    <button class="back" id="back">← ZURÜCK</button>
+  </section>`;
+  const fn = document.getElementById("fn"), em = document.getElementById("em"), ds = document.getElementById("ds"), sub = document.getElementById("sub");
+  fn.value = contact.firstName || ""; em.value = contact.email || ""; ds.checked = !!contact.consent;
+  const valid = () => fn.value.trim().length > 1 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em.value.trim()) && ds.checked;
+  const upd = () => sub.disabled = !valid();
+  [fn,em].forEach(el => el.addEventListener("input", upd)); ds.addEventListener("change", upd); upd();
+  document.getElementById("f").addEventListener("submit", e => {
+    e.preventDefault(); if (!valid()) return;
+    const changed = contact.email !== em.value.trim();
+    contact = { firstName: fn.value.trim(), email: em.value.trim(), consent: true };
+    if (changed) sendStart();
+    go("q:" + Q[0].id);
+  });
+  document.getElementById("back").onclick = back;
+}
+
+function renderQ(q){
+  app.innerHTML = `
+  <section class="screen">
+    <div class="eyebrow">${q.eyebrow}</div>
+    <h2>${q.title}</h2>
+    ${q.intro ? `<p class="lead">${q.intro}</p>` : ""}
+    <div class="opts">
+      ${q.opts.map(o => `<button class="opt ${A[q.id]===o.v?"sel":""}" data-v="${o.v}">${o.l || o.v}${o.s?`<small>${o.s}</small>`:""}</button>`).join("")}
+    </div>
+    <button class="back" id="back">← ZURÜCK</button>
+  </section>`;
+  app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    A[q.id] = b.dataset.v;
+    if (q.id === "status" && A.status === "none"){ delete A.format; delete A.budget; }
+    if (q.id === "format" && A.format !== "individuell") delete A.budget;
+    b.classList.add("sel");
+    setTimeout(() => go(nextAfter(q.id)), 160);
+  });
+  document.getElementById("back").onclick = back;
+}
+
+function renderResult(){
+  const r = route();
+  const h = hours();
+  const calc = `${A.time === "4" ? "4+" : A.time} Einheiten × ${CONFIG.minutesPerSession} Minuten × ${CONFIG.weeksPerYear} Wochen`;
+  let reco = RECO[r];
+  if (A.problem === "injury" && r !== "1:1") reco += " " + INJURY_ADDON;
+
+  const cta = r === "1:1" ? `
+    <div class="section">
+      <div class="eyebrow">So geht es weiter</div>
+      <h3>Schick Chris eine Sprachnachricht</h3>
+      <p>Maximal 2 Minuten. Beantworte darin diese 3 Fragen:</p>
+      <ol class="qs">${VOICE_QUESTIONS.map(x => `<li>${x}</li>`).join("")}</ol>
+      <div class="actions"><a class="btn full" id="wa" href="${CONFIG.whatsappUrl}" target="_blank" rel="noopener">SPRACHNACHRICHT AN CHRIS</a></div>
+      <p class="note">Die Fragen und den Link bekommst du zusätzlich per Mail.</p>
+    </div>` : `
+    <div class="section">
+      <div class="eyebrow">Dein nächster Schritt</div>
+      <h3>Willst du den kostenlosen Hike Ready Plan?</h3>
+      <p>Du brauchst nur einen Rucksack, eine Box und ein bisschen Platz.</p>
+      <div class="btns">
+        <button class="btn full" id="hr-ja">JA, SCHICK MIR DEN PLAN</button>
+        <button class="btn full ghost" id="hr-nein">NEIN, DANKE</button>
+      </div>
+    </div>`;
+
+  app.innerHTML = `
+  <section class="screen">
+    <div class="eyebrow">Deine Auswertung</div>
+    <h1>${esc(contact.firstName)}, hier stehst du gerade.</h1>
+    <div class="rows">
+      <div><span>Terrain</span><b>${esc(A.activity)}</b></div>
+      <div><span>Trainingsstand</span><b>${labelOf("status")}</b></div>
+      <div><span>Situation</span><b>${labelOf("problem")}</b></div>
+      <div><span>Zeitbudget</span><b>${labelOf("time")} / Woche</b></div>
+    </div>
+    <p style="margin-top:18px">${STATUS_TEXT[A.status]}</p>
+    <div class="stat">
+      <div class="eyebrow" style="margin-bottom:10px">Deine Trainingszeit pro Jahr</div>
+      <div class="num">${A.time === "4" ? "≥ " : ""}${h}<small>STUNDEN</small></div>
+      <div class="calc">${calc}</div>
+      <p>So viel Zeit hast du pro Jahr für dein Training. Die Frage ist, wie viel davon auf dein Ziel einzahlt.</p>
+    </div>
+    <div class="quote">
+      <div class="who">Coach Chris</div>
+      <p>${PROBLEM_TEXT[A.problem]}</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Meine Empfehlung · Coach Chris</div>
+      <p>${reco}</p>
+    </div>
+    ${cta}
+  </section>`;
+
+  if (r === "1:1"){
+    sendComplete();
+  } else {
+    document.getElementById("hr-ja").onclick = () => { sendComplete("ja"); go("done-ja"); };
+    document.getElementById("hr-nein").onclick = () => { sendComplete("nein"); go("done-nein"); };
+  }
+}
+
+function renderDone(yes){
+  app.innerHTML = yes ? `
+  <section class="screen">
+    <div class="eyebrow">Hike Ready</div>
+    <h1>Check dein Postfach.</h1>
+    <p>Der Hike Ready Plan ist unterwegs. Schau in den nächsten Minuten in dein Postfach, und falls nichts da ist, auch in den Spam-Ordner.</p>
+    <p class="accent" style="margin-top:18px">Train harder than you hike.</p>
+  </section>` : `
+  <section class="screen">
+    <div class="eyebrow">Alles klar</div>
+    <h1>Deine Auswertung hast du.</h1>
+    <p>Ab jetzt bekommst du jede Woche unseren Newsletter mit Input von Chris. Und wenn du magst, hör in den Podcast rein.</p>
+    <div class="actions"><a class="btn full ghost" href="${CONFIG.podcastUrl}" target="_blank" rel="noopener">ZUM PODCAST</a></div>
+  </section>`;
+}
+
+function esc(s){ return String(s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+render();
+</script>
+</body>
+</html>
