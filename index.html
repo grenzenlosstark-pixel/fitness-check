@@ -190,14 +190,26 @@ function tags(extra){
   return t;
 }
 
+/* ================= UTM-PARAMETER ================= */
+// Kommen über die URL des Checks; das Allura-Embed reicht die Parameter der Seite an den iframe weiter.
+const UTM = (() => {
+  const out = {};
+  try {
+    const q = new URLSearchParams(location.search);
+    ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","fbclid"].forEach(k => { const v = q.get(k); if (v) out[k] = v.slice(0,200); });
+  } catch(e){}
+  return out;
+})();
+
 /* ================= ÜBERGABE AN ALLURA ================= */
 function send(fields){
   if (!CONFIG.webhookUrl) return;
   try {
     const body = new URLSearchParams(Object.assign({
       first_name: contact.firstName || "", email: contact.email || "",
-      source: "fitness-check", consent: "ja", timestamp: new Date().toISOString()
-    }, fields));
+      source: "fitness-check", consent: "ja", timestamp: new Date().toISOString(),
+      utm_source: "", utm_medium: "", utm_campaign: "", utm_content: "", utm_term: "", fbclid: ""
+    }, UTM, fields));
     fetch(CONFIG.webhookUrl, { method:"POST", mode:"no-cors", body, keepalive:true }).catch(()=>{});
   } catch(e){}
 }
