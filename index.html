@@ -17,8 +17,7 @@
   body{display:flex;justify-content:center;padding:28px 18px 48px}
   .wrap{width:100%;max-width:560px}
   .brand{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
-  .logo{font-family:"Bebas Neue";font-size:22px;letter-spacing:.06em;white-space:nowrap}
-  .logo span{color:var(--red)}
+  .logo{display:block;height:34px;width:auto}
   .step-count{font-family:"JetBrains Mono";font-size:12px;color:#9a978f;letter-spacing:.08em;white-space:nowrap}
   .bar{height:3px;background:#1e1e1e;margin-bottom:34px;overflow:hidden}
   .bar i{display:block;height:100%;width:0;background:var(--red);transition:width .35s ease}
@@ -79,7 +78,7 @@
 <body>
 <div class="wrap">
   <div class="brand">
-    <div class="logo">GRENZENLOS <span>STARK</span></div>
+    <img class="logo" src="logo.png" alt="Grenzenlos Stark">
     <div class="step-count" id="count"></div>
   </div>
   <div class="bar"><i id="bar"></i></div>
@@ -106,17 +105,17 @@ const Q = [
     ]},
   { id:"status", eyebrow:"Dein Trainingsstand", title:"Trainierst du aktuell?",
     opts:[
-      {v:"none", l:"Aktuell gar nicht"},
-      {v:"irregular", l:"Unregelmäßig, wenn es gerade passt"},
-      {v:"regular", l:"Regelmäßig, mindestens 1× pro Woche"}
+      {v:"none", l:"Aktuell gar nicht", d:"Du trainierst aktuell gar nicht"},
+      {v:"irregular", l:"Unregelmäßig, wenn es gerade passt", d:"Du trainierst unregelmäßig, wenn es gerade passt"},
+      {v:"regular", l:"Regelmäßig, mindestens 1× pro Woche", d:"Du trainierst regelmäßig, mindestens 1× pro Woche"}
     ]},
   { id:"problem", eyebrow:"Deine Situation", title:"Was trifft gerade am ehesten auf dich zu?",
     opts:[
-      {v:"progress", l:"Ich mache keine Fortschritte im Training"},
-      {v:"pain", l:"Knie oder Rücken machen auf Touren Probleme"},
-      {v:"goal", l:"Ich habe ein konkretes Ziel, das ich erreichen will"},
-      {v:"routine", l:"Mir fehlt ein Plan, der zu meinem Alltag passt"},
-      {v:"injury", l:"Ich komme gerade aus einer Verletzung zurück"}
+      {v:"progress", l:"Ich mache keine Fortschritte im Training", d:"Du machst keine Fortschritte im Training"},
+      {v:"pain", l:"Knie oder Rücken machen auf Touren Probleme", d:"Knie oder Rücken machen dir auf Touren Probleme"},
+      {v:"goal", l:"Ich habe ein konkretes Ziel, das ich erreichen will", d:"Du hast ein konkretes Ziel, das du erreichen willst"},
+      {v:"routine", l:"Mir fehlt ein Plan, der zu meinem Alltag passt", d:"Dir fehlt ein Plan, der zu deinem Alltag passt"},
+      {v:"injury", l:"Ich komme gerade aus einer Verletzung zurück", d:"Du kommst gerade aus einer Verletzung zurück"}
     ]},
   { id:"time", eyebrow:"Dein Zeitbudget", title:"Wie oft kannst du pro Woche trainieren?",
     opts:[
@@ -126,7 +125,7 @@ const Q = [
     showIf: a => a.status !== "none",
     opts:[
       {v:"system", l:"Selbstständig nach einem fertigen System", s:"Plan + Erklärvideos · du ziehst durch"},
-      {v:"individuell", l:"Mit einem Plan, den Chris individuell für mich baut", s:"inkl. WhatsApp-Support · ab 250 € / Monat"}
+      {v:"individuell", l:"Mit einem Plan, den du individuell für mich baust", s:"inkl. WhatsApp-Support · ab 250 € / Monat"}
     ]},
   { id:"budget", eyebrow:"Klartext", title:"Passt das Investment für dich?",
     intro:"Bevor wir in die Details gehen und entscheiden, ob und wie wir zusammenarbeiten können: Das 1:1 kostet je nach Laufzeit 250 bis 350 € im Monat, plus einmalig 350 € Onboarding. Ist das für dich gerade realistisch?",
@@ -148,7 +147,7 @@ const PROBLEM_TEXT = {
   injury: "Grundregel: Alles, was nicht wehtut, darfst du machen. Was wehtut, lässt du weg. Nach einer Verletzung empfehle ich dir aber einen individuellen Plan, damit du alles nach und nach sauber aufbaust und es nicht beim ersten Mal Vollgas wieder aufflammt."
 };
 const RECO = {
-  "1:1": "Du willst es individuell, und genau das braucht dein Engpass: ein Plan, der auf dein Ziel, dein Equipment und deinen Alltag gebaut ist und alle 4 Wochen angepasst wird.",
+  "1:1": "Du willst es individuell, und genau das braucht dein Engpass: ein Plan, den ich auf dein Ziel, dein Equipment und deinen Alltag baue und alle 4 Wochen anpasse.",
   "einsteiger": "Für die Arbeit im 1:1 brauchst du schon eine Basis, und genau die baust du jetzt auf. Der Hike Ready Plan gibt dir 4 Wochen, 3 Einheiten pro Woche, jede mit Warm Up und Cool Down. Danach weißt du, wo du stehst, und kannst entscheiden, wie es weitergeht.",
   "system": "Starte mit einem klaren System statt mit einzelnen Einheiten. Der Hike Ready Plan gibt dir 4 Wochen, 3 Einheiten pro Woche, jede mit Warm Up und Cool Down.",
   "budget-nein": "Das 1:1 passt gerade nicht, völlig okay. Starte mit einem klaren System statt mit einzelnen Einheiten. Der Hike Ready Plan gibt dir 4 Wochen, 3 Einheiten pro Woche, jede mit Warm Up und Cool Down."
@@ -170,6 +169,7 @@ const app = document.getElementById("app");
 
 const visibleQ = () => Q.filter(q => !q.showIf || q.showIf(A));
 const labelOf = id => { const q = Q.find(x => x.id === id); const o = q && q.opts.find(x => x.v === A[id]); return o ? (o.l || o.v) : ""; };
+const duOf = id => { const q = Q.find(x => x.id === id); const o = q && q.opts.find(x => x.v === A[id]); return o ? (o.d || o.l || o.v) : ""; };
 const hours = () => Number(A.time || 0) * CONFIG.minutesPerSession * CONFIG.weeksPerYear / 60;
 
 function route(){
@@ -262,7 +262,7 @@ function renderIntro(){
     <div class="gains">
       <div><span>01</span><b>was dich gerade wirklich bremst</b></div>
       <div><span>02</span><b>wie viel Training du realistisch brauchst</b></div>
-      <div><span>03</span><b>wie du dein Ziel erreichst und wie das mit uns konkret aussehen kann</b></div>
+      <div><span>03</span><b>wie du dein Ziel erreichst und wie das mit mir konkret aussehen kann</b></div>
     </div>
     <p class="accent" style="margin-top:18px">Train harder than you hike.</p>
     <div class="actions"><button class="btn full" id="start">JETZT FITNESS-CHECK STARTEN</button></div>
@@ -330,10 +330,10 @@ function renderResult(){
   const cta = r === "1:1" ? `
     <div class="section">
       <div class="eyebrow">So geht es weiter</div>
-      <h3>Schick Chris eine Sprachnachricht</h3>
+      <h3>Schick mir eine Sprachnachricht</h3>
       <p>Maximal 2 Minuten. Beantworte darin diese 3 Fragen:</p>
       <ol class="qs">${VOICE_QUESTIONS.map(x => `<li>${x}</li>`).join("")}</ol>
-      <div class="actions"><a class="btn full" id="wa" href="${CONFIG.whatsappUrl}" target="_blank" rel="noopener">SPRACHNACHRICHT AN CHRIS</a></div>
+      <div class="actions"><a class="btn full" id="wa" href="${CONFIG.whatsappUrl}" target="_blank" rel="noopener">SPRACHNACHRICHT SCHICKEN</a></div>
       <p class="note">Die Fragen und den Link bekommst du zusätzlich per Mail.</p>
     </div>` : `
     <div class="section">
@@ -352,9 +352,9 @@ function renderResult(){
     <h1>${esc(contact.firstName)}, hier stehst du gerade.</h1>
     <div class="rows">
       <div><span>Terrain</span><b>${esc(A.activity)}</b></div>
-      <div><span>Trainingsstand</span><b>${labelOf("status")}</b></div>
-      <div><span>Situation</span><b>${labelOf("problem")}</b></div>
-      <div><span>Zeitbudget</span><b>${labelOf("time")} / Woche</b></div>
+      <div><span>Trainingsstand</span><b>${duOf("status")}</b></div>
+      <div><span>Situation</span><b>${duOf("problem")}</b></div>
+      <div><span>Zeitbudget</span><b>Du kannst ${labelOf("time")} pro Woche trainieren</b></div>
     </div>
     <p style="margin-top:18px">${STATUS_TEXT[A.status]}</p>
     <div class="stat">
@@ -393,7 +393,7 @@ function renderDone(yes){
   <section class="screen">
     <div class="eyebrow">Alles klar</div>
     <h1>Deine Auswertung hast du.</h1>
-    <p>Ab jetzt bekommst du jede Woche unseren Newsletter mit Input von Chris. Und wenn du magst, hör in den Podcast rein.</p>
+    <p>Ab jetzt bekommst du jede Woche meinen Newsletter mit Input von mir. Und wenn du magst, hör in den Podcast rein.</p>
     <div class="actions"><a class="btn full ghost" href="${CONFIG.podcastUrl}" target="_blank" rel="noopener">ZUM PODCAST</a></div>
   </section>`;
 }
